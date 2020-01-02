@@ -6,3 +6,5 @@
                   2.实现Runnable接口
                   3.实现Callable接口
                   4.线程池（ExecutorService）
+                  
+三.线程同步机制方式:1.lock    2.同步代码块    3.同步方法
