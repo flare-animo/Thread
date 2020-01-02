@@ -1,0 +1,75 @@
+/*
+* @哲学家就餐问题
+*/
+    class Philosopher extends Thread{     //把哲学家当作线程
+        private String name;
+        private Chopsticks chopsticks;
+
+        public Philosopher( String name ,Chopsticks chopsticks) {
+            super(name);
+            this.name = name;
+            this.chopsticks = chopsticks;
+        }
+
+        public void run(){
+            while (true){
+                think();
+                chopsticks.takeChopsticks();
+                eat();
+                chopsticks.putChopsticks();
+            }
+        }
+
+        public void eat(){
+            System.out.println("I am eating..."+name);
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void think(){
+            System.out.println("I am thinking..."+name);
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    class Chopsticks{
+        private boolean[] used={false,false,false,false,false,false};
+
+        public synchronized void takeChopsticks(){
+            String name = Thread.currentThread().getName();
+            int i = Integer.parseInt(name);
+            if(used[i] || used[(i+1)%5]){
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                used[i]=true;
+                used[(i+1)%5]=true;
+            }
+        }
+        public synchronized void putChopsticks(){
+            String name = Thread.currentThread().getName();
+            int i = Integer.parseInt(name);
+            used[i]=false;
+            used[(i+1)%5]=false;
+        }
+    }
+    class PhilosopherThread{
+        public static void main(String[] args) {
+            Chopsticks chopsticks = new Chopsticks();
+            new Philosopher("0",chopsticks).start();
+            new Philosopher("1",chopsticks).start();
+            new Philosopher("2",chopsticks).start();
+            new Philosopher("3",chopsticks).start();
+            new Philosopher("4",chopsticks).start();
+
+        }
+    }
